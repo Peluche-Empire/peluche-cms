@@ -2,6 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
   "name": "peluche-cms",
+  "account_id": "00e1426a602092176f134adab27db14d",
   "compatibility_date": "2025-08-15",
   "compatibility_flags": [
     // Enable Node.js API

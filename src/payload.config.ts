@@ -8,8 +8,17 @@ import { CloudflareContext, getCloudflareContext } from '@opennextjs/cloudflare'
 import { GetPlatformProxyOptions } from 'wrangler'
 import { r2Storage } from '@payloadcms/storage-r2'
 
+import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
+
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { Articles } from './collections/Articles'
+import { Categories } from './collections/Categories'
+import { Tags } from './collections/Tags'
+import { Countries } from './collections/Countries'
+import { Tools } from './collections/Tools'
+import { ToolCategories } from './collections/ToolCategories'
+import { Tenants } from './collections/Tenants'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -49,8 +58,15 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    meta: {
+      titleSuffix: '— Peluche Empire',
+      description: 'Peluche Empire CMS',
+    },
+    components: {
+      beforeDashboard: ['@/components/DashboardWelcome'],
+    },
   },
-  collections: [Users, Media],
+  collections: [Users, Media, Articles, Categories, Tags, Countries, Tools, ToolCategories, Tenants],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -62,6 +78,20 @@ export default buildConfig({
     r2Storage({
       bucket: cloudflare.env.R2,
       collections: { media: true },
+    }),
+    multiTenantPlugin({
+      collections: {
+        articles: {},
+        categories: {},
+        tags: {},
+        media: {},
+        countries: {},
+        tools: {},
+        'tool-categories': {},
+      },
+      userHasAccessToAllTenants: (user) => {
+        return (user as any)?.roles?.includes('super-admin') ?? false
+      },
     }),
   ],
 })
