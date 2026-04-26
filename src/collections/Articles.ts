@@ -1,13 +1,22 @@
 import type { CollectionConfig } from 'payload'
+import { triggerDeployHook } from '../hooks/triggerDeployHook'
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'category', 'publishedAt', 'updatedAt'],
+    defaultColumns: ['title', '_status', 'category', 'publishedAt', 'updatedAt'],
   },
   access: {
     read: () => true,
+  },
+  versions: {
+    drafts: {
+      autosave: false,
+    },
+  },
+  hooks: {
+    afterChange: [triggerDeployHook],
   },
   fields: [
     {

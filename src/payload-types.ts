@@ -171,6 +171,10 @@ export interface Tenant {
   id: number;
   name: string;
   slug: string;
+  /**
+   * Cloudflare Workers Builds deploy hook URL. Triggered when an article is published or a published article is updated.
+   */
+  deployHook?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -224,6 +228,7 @@ export interface Article {
   publishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -453,6 +458,7 @@ export interface ArticlesSelect<T extends boolean = true> {
   publishedAt?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -519,6 +525,7 @@ export interface ToolCategoriesSelect<T extends boolean = true> {
 export interface TenantsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
+  deployHook?: T;
   updatedAt?: T;
   createdAt?: T;
 }

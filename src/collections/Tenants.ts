@@ -1,6 +1,10 @@
-import type { Access, CollectionConfig } from 'payload'
+import type { Access, CollectionConfig, FieldAccess } from 'payload'
 
 const isSuperAdmin: Access = ({ req: { user } }) => {
+  return user?.roles?.includes('super-admin') ?? false
+}
+
+const isSuperAdminField: FieldAccess = ({ req: { user } }) => {
   return user?.roles?.includes('super-admin') ?? false
 }
 
@@ -41,6 +45,19 @@ export const Tenants: CollectionConfig = {
       type: 'text',
       required: true,
       unique: true,
+    },
+    {
+      name: 'deployHook',
+      type: 'text',
+      admin: {
+        description:
+          'Cloudflare Workers Builds deploy hook URL. Triggered when an article is published or a published article is updated.',
+      },
+      access: {
+        read: isSuperAdminField,
+        update: isSuperAdminField,
+        create: isSuperAdminField,
+      },
     },
   ],
 }
