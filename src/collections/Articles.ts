@@ -15,7 +15,11 @@ export const Articles: CollectionConfig = {
   },
   versions: {
     drafts: {
-      autosave: false,
+      autosave: {
+        interval: 800,
+        showSaveDraftButton: true,
+      },
+      schedulePublish: false,
     },
   },
   hooks: {
