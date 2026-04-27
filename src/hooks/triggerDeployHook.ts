@@ -1,4 +1,5 @@
 import type { CollectionAfterChangeHook } from 'payload'
+import { getCloudflareContext } from '@opennextjs/cloudflare'
 
 type ArticleDoc = {
   id: number
@@ -65,9 +66,7 @@ export const triggerDeployHook: CollectionAfterChangeHook = async ({
     return doc
   }
 
-  // Fire-and-forget. Workers Builds dedupes concurrent triggers by queueing,
-  // so a flurry of edits won't run N parallel builds.
-  fetch(deployHook, { method: 'POST' })
+  const fireDeploy = fetch(deployHook, { method: 'POST' })
     .then((res) => {
       if (!res.ok) {
         req.payload.logger.error(
@@ -92,6 +91,20 @@ export const triggerDeployHook: CollectionAfterChangeHook = async ({
         'triggerDeployHook: deploy hook fetch failed',
       )
     })
+
+  // Workers terminates un-awaited promises when the request returns; waitUntil
+  // keeps the fetch alive past the response so Workers Builds actually gets
+  // pinged. Falls back to await when ctx isn't available (e.g. local next dev).
+  try {
+    const { ctx } = await getCloudflareContext({ async: true })
+    if (ctx?.waitUntil) {
+      ctx.waitUntil(fireDeploy)
+    } else {
+      await fireDeploy
+    }
+  } catch {
+    await fireDeploy
+  }
 
   return doc
 }
