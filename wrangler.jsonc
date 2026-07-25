@@ -21,9 +21,12 @@
   },
   "d1_databases": [
     {
+      // Primary lives in ENAM. The original database (peluche-cms-db,
+      // 3a064029-f482-4a38-accb-0d9da6f9abdd) had its primary in APAC/Singapore, which cost
+      // ~330ms per round trip from South America. It is retained, untouched, as a rollback.
       "binding": "D1",
-      "database_id": "3a064029-f482-4a38-accb-0d9da6f9abdd",
-      "database_name": "peluche-cms-db",
+      "database_id": "13c50d06-7d79-410b-9a13-016b125ea286",
+      "database_name": "peluche-cms-db-enam",
       "remote": true,
     },
   ],
