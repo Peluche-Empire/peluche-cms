@@ -1,28 +1,26 @@
-import { headers as getHeaders } from 'next/headers.js'
-import { getPayload } from 'payload'
 import React from 'react'
 
-import config from '@/payload.config'
 import './styles.css'
 
-export default async function HomePage() {
-  const headers = await getHeaders()
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
+// Deliberately free of any Payload import or `headers()` call. Touching either would opt
+// this route into dynamic rendering, which meant booting the whole Payload config and a
+// round trip to D1 in Singapore just to render a splash screen.
+export const dynamic = 'force-static'
 
+export default function HomePage() {
   return (
     <div className="home">
       <div className="content">
         <h1>Peluche Empire</h1>
         <p className="tagline">Content Management System</p>
-        {user && <p className="welcome">Logged in as {user.email}</p>}
         <div className="links">
-          <a
-            className="admin"
-            href={payloadConfig.routes.admin}
-            rel="noopener noreferrer"
-          >
+          {/*
+            eslint-disable-next-line @next/next/no-html-link-for-pages --
+            The admin panel is a separate app shell with its own bundle. A plain <a> gives it
+            a clean full page load; <Link> would only add prefetching of a route that boots
+            Payload and hits D1.
+          */}
+          <a className="admin" href="/admin" rel="noopener noreferrer">
             Go to admin panel
           </a>
         </div>

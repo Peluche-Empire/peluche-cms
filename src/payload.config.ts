@@ -68,11 +68,18 @@ export default buildConfig({
   },
   collections: [Users, Media, Articles, Categories, Tags, Countries, Tools, ToolCategories, Tenants],
   editor: lexicalEditor(),
+  // Nothing in this app queries GraphQL (the admin panel uses REST), and it has known
+  // issues on workerd. Disabling skips schema construction on boot and shrinks the bundle.
+  graphQL: {
+    disable: true,
+  },
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  db: sqliteD1Adapter({ binding: cloudflare.env.D1 }),
+  // `readReplicas` routes reads to a nearby D1 replica instead of the Singapore primary.
+  // Writes and the first read of each request still hit the primary.
+  db: sqliteD1Adapter({ binding: cloudflare.env.D1, readReplicas: 'first-primary' }),
   logger: isProduction ? cloudflareLogger : undefined,
   plugins: [
     r2Storage({

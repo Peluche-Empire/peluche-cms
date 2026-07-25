@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Multi-tenant Payload CMS v3 running on Cloudflare Workers with D1 (SQLite) database and R2 storage for media. Built on Next.js 15 with the OpenNext Cloudflare adapter. Requires a **paid** Cloudflare Workers plan due to bundle size limits (3MB free tier).
 
-This CMS serves multiple sites under the **Pallucci Empire** umbrella, replacing DatoCMS:
+This CMS serves multiple sites under the **Peluche Empire** umbrella, replacing DatoCMS:
 - **Bassyana** — English agriculture/bioproducts blog
 - **Goonie Nomada** — Spanish travel/digital nomad blog
 

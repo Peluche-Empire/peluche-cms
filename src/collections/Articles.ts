@@ -14,9 +14,14 @@ export const Articles: CollectionConfig = {
     },
   },
   versions: {
+    // Autosave writes a version row per interval, so cap history to stop `_articles_v`
+    // growing without bound and slowing version queries over time.
+    maxPerDoc: 20,
     drafts: {
       autosave: {
-        interval: 800,
+        // Autosaves are writes, so they always cross to the D1 primary in Singapore.
+        // 800ms queued saves faster than the round trip could drain them.
+        interval: 2000,
         showSaveDraftButton: true,
       },
       schedulePublish: false,
